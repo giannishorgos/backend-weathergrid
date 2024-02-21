@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using WeatherForecastAPI.Models;
+using WeatherForecastAPI.Services;
+using Newtonsoft.Json;
 
 namespace WeatherForecastAPI.Controllers
 {
@@ -7,30 +9,25 @@ namespace WeatherForecastAPI.Controllers
     [Route("[controller]")]
     public class WeatherForecastController: ControllerBase
     {
-        private static readonly string[] _summaries = new []
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
 
         private readonly ILogger<WeatherForecastController> _logger;
+        private readonly HttpService _httpService;
 
         public WeatherForecastController(ILogger<WeatherForecastController> logger) 
         {
             _logger = logger;
+            _httpService = new HttpService();
         }
 
         [HttpGet(Name = "GetWeatherForecast")]
-        public IEnumerable<WeatherForecastModel> Get() 
+        public IActionResult Get([FromQuery] string city) 
         {
-            Console.WriteLine(Random.Shared.Next(4));
-            return Enumerable.Range(1, 5).Select(index =>
-                    new WeatherForecastModel
-                    {
-                    Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                    TemperatureC = 25,
-                     Summary = _summaries[Random.Shared.Next(_summaries.Length)]
-                    })
-                .ToArray();
+            string url = $"http://api.weatherapi.com/v1/forecast.json?key=5f7701a58bf44f1a8d9195220240401&alerts=nobbj&q={city}";
+            Task<string> response = _httpService.getResponseString(url);
+
+            WeatherForecastModel model = JsonConvert.DeserializeObject<WeatherForecastModel>(response.Result);
+
+            return Ok(model);
         }
     }
 }
