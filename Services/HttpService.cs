@@ -28,7 +28,6 @@ namespace WeatherForecastAPI.Services
             }
             catch(HttpRequestException e)
             {
-                Console.WriteLine("I mean in service is the problem");
                 throw;
             }
         }

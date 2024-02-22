@@ -1,5 +1,6 @@
 using WeatherForecastAPI.Services;
 
+// TODO: Add CORS policy
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
