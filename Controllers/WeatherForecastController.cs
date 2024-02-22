@@ -5,6 +5,9 @@ using Newtonsoft.Json;
 
 namespace WeatherForecastAPI.Controllers
 {
+    /// <summary>
+    /// Controller for retrieving weather data based on query parameters.
+    /// </summary>
     [ApiController]
     [Route("[controller]")]
     public class WeatherForecastController: ControllerBase
@@ -13,21 +16,41 @@ namespace WeatherForecastAPI.Controllers
         private readonly ILogger<WeatherForecastController> _logger;
         private readonly HttpService _httpService;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger) 
+        private const string _url =  "http://api.weatherapi.com/v1/forecast.json?key=5f7701a58bf44f1a8d9195220240401&alerts=nobbj&";
+
+        /// <summary>
+        /// Creates a new instance, injecting <see cref="ILogger"/> and <see cref="HttpService"/>
+        /// </summary>
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, HttpService httpService) 
         {
             _logger = logger;
-            _httpService = new HttpService();
+            _httpService = httpService; 
         }
 
         [HttpGet(Name = "GetWeatherForecast")]
-        public IActionResult Get([FromQuery] string city) 
+        public async Task<IActionResult> Get([FromQuery] QueryParametersModel queryParameters) 
         {
-            string url = $"http://api.weatherapi.com/v1/forecast.json?key=5f7701a58bf44f1a8d9195220240401&alerts=nobbj&q={city}";
-            Task<string> response = _httpService.getResponseString(url);
+            string uri = $"{_url}q={queryParameters.City}&days={queryParameters.Days}&aqi={queryParameters.Aqi}";
+            try
+            {
+                string response = await _httpService.getResponseString(uri);
+                WeatherData? weatherData = JsonConvert.DeserializeObject<WeatherData>(response);
+                if(weatherData != null)
+                {
+                    return Ok(weatherData);
+                }
+                else 
+                {
+                    return BadRequest("Failed to deserialize Json");
+                }
+            }
+            catch(HttpRequestException e)
+            {
+                _logger.LogError($"Http Error: {e}");
+                return BadRequest("No data for these parameters");
+            }
 
-            WeatherForecastModel model = JsonConvert.DeserializeObject<WeatherForecastModel>(response.Result);
 
-            return Ok(model);
         }
     }
 }
