@@ -19,9 +19,18 @@ namespace WeatherForecastAPI.Services
 
         public async Task<string> getResponseString(string url)
         {
-            HttpResponseMessage response = await _client.GetAsync(url);
-            
-            return await response.Content.ReadAsStringAsync();
+            try 
+            {
+                HttpResponseMessage response = await _client.GetAsync(url);
+                response.EnsureSuccessStatusCode();
+
+                return await response.Content.ReadAsStringAsync();
+            }
+            catch(HttpRequestException e)
+            {
+                Console.WriteLine("I mean in service is the problem");
+                throw;
+            }
         }
     }
 }
