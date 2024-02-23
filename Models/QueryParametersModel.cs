@@ -2,6 +2,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace WeatherForecastAPI.Models 
 {
+    /// <summary>
+    /// Model for query parameters.
+    /// </summary>
     public class QueryParametersModel 
     {
         private string _aqi = "no";

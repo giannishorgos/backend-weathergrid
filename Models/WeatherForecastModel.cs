@@ -1,11 +1,17 @@
 namespace WeatherForecastAPI.Models
 {
+    /// <summary>
+    /// Model for Weather API response.
+    /// </summary>
     public class WeatherData {
         public Location? Location { get; set; }
         public CurrentWeather? Current { get; set; }
         public Forecast? Forecast { get; set; }
     }
 
+    /// <summary>
+    /// Model for location information contained in Weather API response.
+    /// </summary>
     public class Location
     {
         public string? Name { get; set; }
@@ -18,6 +24,9 @@ namespace WeatherForecastAPI.Models
         public string? Localtime { get; set; }
     }
 
+    /// <summary>
+    /// Model for current weather information contained in Weather API response.
+    /// </summary>
     public class CurrentWeather
     {
         public int Last_updated_epoch { get; set; }
@@ -29,6 +38,9 @@ namespace WeatherForecastAPI.Models
         public AirQuality? Air_quality { get; set; }
     }
 
+    /// <summary>
+    /// Model for weather condition contained in Weather API response.
+    /// </summary>
     public class WeatherCondition
     {
         public string? Text { get; set; }
@@ -36,6 +48,9 @@ namespace WeatherForecastAPI.Models
         public int Code { get; set; }
     }
 
+    /// <summary>
+    /// Model for air quality contained in Weather API response.
+    /// </summary>
     public class AirQuality
     {
         public double Co { get; set; }
@@ -46,11 +61,17 @@ namespace WeatherForecastAPI.Models
         public double PM10 { get; set; }
     }
 
+    /// <summary>
+    /// Model for forecast contained in Weather API response.
+    /// </summary>
     public class Forecast
     {
         public List<ForecastDay>? ForecastDay { get; set; }
     }
 
+    /// <summary>
+    /// Model for forecast day contained in Weather API response.
+    /// </summary>
     public class ForecastDay
     {
         public DateOnly Date { get; set; }
@@ -59,12 +80,18 @@ namespace WeatherForecastAPI.Models
         public List<HourlyTemperature>? Hour { get; set; }
     }
 
+    /// <summary>
+    /// Model for date contained in Weather API response.
+    /// </summary>
     public class DayTemperatures 
     {
         public double Maxtemp_c { get; set; }
         public double Mintemp_c { get; set; }
     }
 
+    /// <summary>
+    /// Model for hourly temperature contained in Weather API response.
+    /// </summary>
     public class HourlyTemperature
     {
         public string? Time { get; set; }
