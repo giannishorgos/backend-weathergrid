@@ -66,7 +66,7 @@ namespace WeatherForecastAPI.Models
     /// </summary>
     public class Forecast
     {
-        public List<ForecastDay>? ForecastDay { get; set; }
+        public List<ForecastDay>? Forecastday { get; set; }
     }
 
     /// <summary>

@@ -1,8 +1,17 @@
 using WeatherForecastAPI.Services;
 
-// TODO: Add CORS policy
 var builder = WebApplication.CreateBuilder(args);
 
+var FrontendOrigin = "Frontend Origin";
+builder.Services.AddCors(options =>
+        {
+            options.AddPolicy(name: FrontendOrigin,
+                policy => 
+                {
+                  policy.WithOrigins("http://localhost:4200")
+                     .WithMethods("GET");
+                });
+        });
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -20,6 +29,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors(FrontendOrigin);
 
 app.UseHttpsRedirection();
 
