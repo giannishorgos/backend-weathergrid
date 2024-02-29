@@ -1,11 +1,12 @@
 using System.Net;
+using WeatherForecastAPI.Interfaces;
 
 namespace WeatherForecastAPI.Services
 {
     /// <summary>
     /// Service for making HTTP requests.
     /// </summary>
-    public class HttpService
+    public class HttpService : IHttp
     {
         private readonly HttpClient _client;
 

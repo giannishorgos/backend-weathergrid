@@ -1,4 +1,8 @@
 using WeatherForecastAPI.Services;
+using WeatherForecastAPI.Data;
+using WeatherForecastAPI.Interfaces;
+using WeatherForecastAPI.Repository;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,8 +22,14 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Configuration.AddEnvironmentVariables();
-builder.Services.AddScoped<HttpService>();
+builder.Services.AddScoped<IHttp, HttpService>();
+builder.Services.AddScoped<UserRepository>();
 builder.Services.AddControllers();
+
+builder.Services.AddDbContext<ApplicationDBContext>(options => 
+        {
+            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+        });
 
 var app = builder.Build();
 
@@ -37,4 +47,3 @@ app.UseHttpsRedirection();
 app.MapControllers();
 
 app.Run();
-
