@@ -44,7 +44,7 @@ namespace WeatherForecastAPI.Controllers
 
         [HttpGet(Name = "Get User")]
         [ProducesResponseType(200, Type = typeof(User))]
-        public IActionResult GetUserById([FromQuery] int id)
+        public IActionResult GetUser([FromQuery] int id)
         {
             User? user = _userRepository.GetUser(id);
 
@@ -57,20 +57,5 @@ namespace WeatherForecastAPI.Controllers
             return Ok(user);
         }
 
-        [HttpGet(Name = "Get User by Username")]
-        [ProducesResponseType(200, Type = typeof(User))]
-        public IActionResult GetUserByUsername([FromQuery] string username)
-        {
-            User? user = _userRepository.GetUser(username);
-
-            if(!ModelState.IsValid)
-            {
-                Console.WriteLine($"Model State, {ModelState}");
-                return BadRequest(ModelState);
-            }
-
-            return Ok(user);
-        }
-            
     }
 }
