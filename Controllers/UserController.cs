@@ -9,9 +9,11 @@ namespace WeatherForecastAPI.Controllers
     public class UserController : ControllerBase
     {
         private UserRepository _userRepository;
-        public UserController(UserRepository userRepository)
+        private FavoriteLocationRepository _locationRepository;
+        public UserController(UserRepository userRepository, FavoriteLocationRepository locationRepository)
         {
             _userRepository = userRepository;
+            _locationRepository = locationRepository;
         }
 
         [HttpPost(Name = "Add User")]
@@ -28,6 +30,15 @@ namespace WeatherForecastAPI.Controllers
             return Ok(user);
         }
 
+        [HttpPost("{id}")]
+        [ProducesResponseType(200, Type = typeof(void))]
+        public IActionResult CreateFavoriteLocation(int userId, [FromQuery] string locationName)
+        {
+            _locationRepository.AddFavoriteLocation(locationName, userId);
+
+            return Ok();
+        }
+        
         [HttpGet(Name = "Get All Users")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<User>))]
         public IActionResult GetUsers()
@@ -42,9 +53,9 @@ namespace WeatherForecastAPI.Controllers
             return Ok(users);
         }
 
-        [HttpGet(Name = "Get User")]
+        [HttpGet("{id}")]
         [ProducesResponseType(200, Type = typeof(User))]
-        public IActionResult GetUser([FromQuery] int id)
+        public IActionResult GetUser(int id)
         {
             User? user = _userRepository.GetUser(id);
 

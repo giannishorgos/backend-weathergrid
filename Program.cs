@@ -3,10 +3,13 @@ using WeatherForecastAPI.Data;
 using WeatherForecastAPI.Interfaces;
 using WeatherForecastAPI.Repository;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var FrontendOrigin = "Frontend Origin";
+
+// Add services to the container.
 builder.Services.AddCors(options =>
         {
             options.AddPolicy(name: FrontendOrigin,
@@ -16,20 +19,30 @@ builder.Services.AddCors(options =>
                      .WithMethods("GET");
                 });
         });
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Configuration.AddEnvironmentVariables();
 builder.Services.AddScoped<IHttp, HttpService>();
 builder.Services.AddScoped<UserRepository>();
+builder.Services.AddScoped<FavoriteLocationRepository>();
 builder.Services.AddControllers();
 
 builder.Services.AddDbContext<ApplicationDBContext>(options => 
-        {
-            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-        });
+    {
+        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    });
+
+
+var domain = $"https://{builder.Configuration["Auth0:Domain"]}";
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options => 
+    {
+        options.Authority = domain;
+        options.Audience = builder.Configuration["Auth0:Audience"];
+
+    });
+
 
 var app = builder.Build();
 
@@ -42,6 +55,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors(FrontendOrigin);
 
+app.UseAuthentication();
+app.UseAuthorization();
 app.UseHttpsRedirection();
 
 app.MapControllers();
