@@ -49,11 +49,16 @@ namespace WeatherForecastAPI.Repository
             return user;
         }
 
-        public User RemoveUser(int id)
+        public User? RemoveUser(int id)
         {
-            User user = _context.User.Find(u => u.Id == id);
+            User? user = _context.User.Find(id);
             
-            _con
+            if(user is not null)
+            {
+                _context.User.Remove(user);
+            }
+
+            return user;
         }
     }
 }

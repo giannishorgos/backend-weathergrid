@@ -30,11 +30,11 @@ namespace WeatherForecastAPI.Controllers
             return Ok(user);
         }
 
-        [HttpPost("locations/{userId}")]
+        [HttpPost("{userId}/locations")]
         [ProducesResponseType(200, Type = typeof(void))]
         public IActionResult CreateFavoriteLocation(int userId, [FromQuery] string locationName)
         {
-            _locationRepository.AddFavoriteLocation(locationName, userId);
+            UserHasLocation? userFavLocation = _locationRepository.AddFavoriteLocation(userId, locationName);
 
             return Ok();
         }
@@ -68,7 +68,7 @@ namespace WeatherForecastAPI.Controllers
             return Ok(user);
         }
 
-        [HttpGet("locations/{userId}")]
+        [HttpGet("{userId}/locations")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<FavoriteLocation>))]
         public IActionResult GetUserLocations(int userId)
         {
