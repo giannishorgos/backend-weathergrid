@@ -30,7 +30,7 @@ namespace WeatherForecastAPI.Controllers
             return Ok(user);
         }
 
-        [HttpPost("{id}")]
+        [HttpPost("locations/{userId}")]
         [ProducesResponseType(200, Type = typeof(void))]
         public IActionResult CreateFavoriteLocation(int userId, [FromQuery] string locationName)
         {
@@ -68,5 +68,36 @@ namespace WeatherForecastAPI.Controllers
             return Ok(user);
         }
 
+        [HttpGet("locations/{userId}")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<FavoriteLocation>))]
+        public IActionResult GetUserLocations(int userId)
+        {
+            ICollection<FavoriteLocation>? userLocations = _userRepository.GetUserLocations(userId);
+
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            return Ok(userLocations);
+        }
+
+
+        [HttpDelete("location/{userId}")]
+        [ProducesResponseType(200, Type = typeof(void))]
+        public IActionResult DeleteFavoriteLocation(int userId, [FromQuery] string locationName)
+        {
+            UserHasLocation? deletedLocation = _locationRepository.DeleteFavoriteLocation(userId, locationName);
+
+            if(deletedLocation is null) 
+            {
+                return BadRequest(new { Message = "Location cannot be found" });
+            }
+
+            return Ok(new 
+                { 
+                    Message = $"Location { deletedLocation.FavoriteLocation.Name } deleted for user { deletedLocation.UserId }" 
+                });
+        }
     }
 }
