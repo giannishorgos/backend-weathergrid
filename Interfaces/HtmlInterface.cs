@@ -4,5 +4,4 @@ namespace WeatherForecastAPI.Interfaces
     {
         Task<string> getResponseString(string url);
     }
-
 }

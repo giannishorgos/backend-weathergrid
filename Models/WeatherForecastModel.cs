@@ -3,7 +3,8 @@ namespace WeatherForecastAPI.Models
     /// <summary>
     /// Model for Weather API response.
     /// </summary>
-    public class WeatherData {
+    public class WeatherData
+    {
         public Location? Location { get; set; }
         public CurrentWeather? Current { get; set; }
         public Forecast? Forecast { get; set; }
@@ -83,7 +84,7 @@ namespace WeatherForecastAPI.Models
     /// <summary>
     /// Model for date contained in Weather API response.
     /// </summary>
-    public class DayTemperatures 
+    public class DayTemperatures
     {
         public double Maxtemp_c { get; set; }
         public double Mintemp_c { get; set; }

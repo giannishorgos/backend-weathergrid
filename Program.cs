@@ -1,9 +1,9 @@
-using WeatherForecastAPI.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using WeatherForecastAPI.Data;
 using WeatherForecastAPI.Interfaces;
 using WeatherForecastAPI.Repository;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using WeatherForecastAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,14 +11,15 @@ var FrontendOrigin = "Frontend Origin";
 
 // Add services to the container.
 builder.Services.AddCors(options =>
+{
+    options.AddPolicy(
+        name: FrontendOrigin,
+        policy =>
         {
-            options.AddPolicy(name: FrontendOrigin,
-                policy => 
-                {
-                  policy.WithOrigins("http://localhost:4200")
-                     .WithMethods("GET");
-                });
-        });
+            policy.WithOrigins("http://localhost:4200").WithMethods("GET");
+        }
+    );
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -28,21 +29,19 @@ builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<FavoriteLocationRepository>();
 builder.Services.AddControllers();
 
-builder.Services.AddDbContext<ApplicationDBContext>(options => 
-    {
-        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-    });
-
+builder.Services.AddDbContext<ApplicationDBContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
 
 var domain = $"https://{builder.Configuration["Auth0:Domain"]}";
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options => 
+builder
+    .Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
     {
         options.Authority = domain;
         options.Audience = builder.Configuration["Auth0:Audience"];
-
     });
-
 
 var app = builder.Build();
 

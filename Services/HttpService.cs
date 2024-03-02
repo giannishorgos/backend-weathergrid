@@ -23,7 +23,6 @@ namespace WeatherForecastAPI.Services
             _client = new HttpClient();
         }
 
-
         /// <summary>
         /// Makes a GET request to the given URL and returns the response as a string.
         /// <exception cref="HttpRequestException">Thrown when the HTTP request fails.</exception>
@@ -32,14 +31,14 @@ namespace WeatherForecastAPI.Services
         /// <returns>Returns the response as a string.</returns>
         public async Task<string> getResponseString(string url)
         {
-            try 
+            try
             {
                 HttpResponseMessage response = await _client.GetAsync(url);
                 response.EnsureSuccessStatusCode();
 
                 return await response.Content.ReadAsStringAsync();
             }
-            catch(HttpRequestException e)
+            catch (HttpRequestException e)
             {
                 throw;
             }

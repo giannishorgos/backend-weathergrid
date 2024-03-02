@@ -29,20 +29,23 @@ namespace WeatherForecastAPI.Repository
 
         public ICollection<FavoriteLocation> GetUserLocations(int id)
         {
-            return _context.UserHasLocations
-                .Where(u => u.UserId == id)
+            return _context
+                .UserHasLocations.Where(u => u.UserId == id)
                 .Select(u => u.FavoriteLocation)
                 .ToList();
         }
 
         public ICollection<FavoriteLocation> GetUserLocations(string username)
         {
-            return _context.UserHasLocations.Where(u => u.User.Username == username).Select(u => u.FavoriteLocation).ToList();
+            return _context
+                .UserHasLocations.Where(u => u.User.Username == username)
+                .Select(u => u.FavoriteLocation)
+                .ToList();
         }
 
         public User AddUser(string username)
         {
-            User user = new User{ Username = username };
+            User user = new User { Username = username };
             _context.User.Add(user);
             _context.SaveChanges();
 
@@ -52,8 +55,8 @@ namespace WeatherForecastAPI.Repository
         public User? RemoveUser(int id)
         {
             User? user = _context.User.Find(id);
-            
-            if(user is not null)
+
+            if (user is not null)
             {
                 _context.User.Remove(user);
             }

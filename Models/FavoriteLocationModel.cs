@@ -6,12 +6,11 @@ namespace WeatherForecastAPI.Models
     /// Represents a favorite location.
     /// </summary>
     public class FavoriteLocation
-    {   
-        [Key]     
+    {
+        [Key]
         public int Id { get; set; }
 
         [Required]
         public string Name { get; set; } = string.Empty;
-
     }
 }

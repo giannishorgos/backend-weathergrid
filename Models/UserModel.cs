@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace WeatherForecastAPI.Models
 {
-    public class User 
+    public class User
     {
         [Key]
         public int Id { get; set; }

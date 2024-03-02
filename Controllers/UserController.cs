@@ -53,15 +53,16 @@ namespace WeatherForecastAPI.Controllers
             return Ok(users);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{userId}")]
         [ProducesResponseType(200, Type = typeof(User))]
         public IActionResult GetUser(int id)
         {
             User? user = _userRepository.GetUser(id);
 
+
+            Console.WriteLine($"Model State, {ModelState}");
             if(!ModelState.IsValid)
             {
-                Console.WriteLine($"Model State, {ModelState}");
                 return BadRequest(ModelState);
             }
 
@@ -83,8 +84,8 @@ namespace WeatherForecastAPI.Controllers
         }
 
 
-        [HttpDelete("location/{userId}")]
-        [ProducesResponseType(200, Type = typeof(void))]
+        [HttpDelete("{userId}/location")]
+        [ProducesResponseType(200, Type = typeof(UserHasLocation))]
         public IActionResult DeleteFavoriteLocation(int userId, [FromQuery] string locationName)
         {
             UserHasLocation? deletedLocation = _locationRepository.DeleteFavoriteLocation(userId, locationName);
@@ -98,6 +99,20 @@ namespace WeatherForecastAPI.Controllers
                 { 
                     Message = $"Location { deletedLocation.FavoriteLocation.Name } deleted for user { deletedLocation.UserId }" 
                 });
+        }
+
+        [HttpDelete("{userId}")]
+        [ProducesResponseType(200, Type = typeof(User))]
+        public IActionResult DeleteUser(int userId)
+        {
+            User? deletedUser = _userRepository.RemoveUser(userId);
+            
+            if(deletedUser is not null)
+            {
+                return BadRequest(new { Message = "User Not Found" });
+            }
+
+            return Ok(deletedUser);
         }
     }
 }
