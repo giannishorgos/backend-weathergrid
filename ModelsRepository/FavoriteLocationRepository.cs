@@ -14,32 +14,42 @@ namespace WeatherForecastAPI.Repository
            _userRepository = userRepository;
        }
 
-       public User? AddFavoriteLocation(int userId, string locationName)
+       public UserHasLocation? AddFavoriteLocation(int userId, string locationName)
        {
+           locationName = locationName.ToLower();
+
            User? user = _userRepository.GetUser(userId);
+           UserHasLocation? userFavLocation = null;
+
            if(user is not null) 
            {
-               FavoriteLocation location = new FavoriteLocation{ Name = locationName.ToLower() };
+               FavoriteLocation? location = _context.FavoriteLocation.Where(loc => loc.Name == locationName).FirstOrDefault();
 
-               _context.FavoriteLocation.Add(location);
-               _context.UserHasLocations.Add(new UserHasLocation { User = user, FavoriteLocation = location });
+               if(location is null)
+               {
+                   location = new FavoriteLocation{ Name = locationName };
+                   _context.FavoriteLocation.Add(location);
 
+               }
+
+                userFavLocation = new UserHasLocation{ User = user, FavoriteLocation = location };
+               _context.UserHasLocations.Add(userFavLocation);
                _context.SaveChanges();
            }
 
-           return user;
+           return userFavLocation;
        }
 
        public UserHasLocation? DeleteFavoriteLocation(int userId, string locationName)
        {
-           UserHasLocation? userFavLocation = _context.UserHasLocations.Where(userLocation => 
+           UserHasLocation? userFavLocation = _context.UserHasLocations
+               .Where(userLocation => 
                 userLocation.UserId == userId && userLocation.FavoriteLocation.Name == locationName)
                .FirstOrDefault();
 
            if(userFavLocation is not null)
            {
                _context.UserHasLocations.Remove(userFavLocation);
-
                _context.SaveChanges();
            }
 
