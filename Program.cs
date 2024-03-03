@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using WeatherForecastAPI.Authorization;
 using WeatherForecastAPI.Data;
 using WeatherForecastAPI.Interfaces;
 using WeatherForecastAPI.Repository;
 using WeatherForecastAPI.Services;
-using WeatherForecastAPI.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,10 +45,13 @@ builder
         options.Audience = builder.Configuration["Auth0:Audience"];
     });
 
-builder.Services.AddAuthorization(options => 
-    {
-        options.AddPolicy("read:messages", policy => policy.Requirements.Add(new HasScopeRequirement("read:messages", domain)));
-    });
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy(
+        "read:messages",
+        policy => policy.Requirements.Add(new HasScopeRequirement("read:messages", domain))
+    );
+});
 
 builder.Services.AddSingleton<AuthorizationHandler<HasScopeRequirement>, HasScopeHandler>();
 var app = builder.Build();

@@ -1,7 +1,7 @@
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using WeatherForecastAPI.Repository;
+using Microsoft.AspNetCore.Mvc;
 using WeatherForecastAPI.Models;
+using WeatherForecastAPI.Repository;
 
 namespace WeatherForecastAPI.Controllers
 {
@@ -12,7 +12,11 @@ namespace WeatherForecastAPI.Controllers
     {
         private UserRepository _userRepository;
         private FavoriteLocationRepository _locationRepository;
-        public UserController(UserRepository userRepository, FavoriteLocationRepository locationRepository)
+
+        public UserController(
+            UserRepository userRepository,
+            FavoriteLocationRepository locationRepository
+        )
         {
             _userRepository = userRepository;
             _locationRepository = locationRepository;
@@ -24,7 +28,7 @@ namespace WeatherForecastAPI.Controllers
         {
             var user = _userRepository.AddUser(Username);
 
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
@@ -36,18 +40,21 @@ namespace WeatherForecastAPI.Controllers
         [ProducesResponseType(200, Type = typeof(void))]
         public IActionResult CreateFavoriteLocation(int userId, [FromQuery] string locationName)
         {
-            UserHasLocation? userFavLocation = _locationRepository.AddFavoriteLocation(userId, locationName);
+            UserHasLocation? userFavLocation = _locationRepository.AddFavoriteLocation(
+                userId,
+                locationName
+            );
 
             return Ok();
         }
-        
+
         [HttpGet(Name = "Get All Users")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<User>))]
         public IActionResult GetUsers()
         {
             ICollection<User> users = _userRepository.GetUsers();
 
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
@@ -61,9 +68,8 @@ namespace WeatherForecastAPI.Controllers
         {
             User? user = _userRepository.GetUser(id);
 
-
             Console.WriteLine($"Model State, {ModelState}");
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
@@ -77,7 +83,7 @@ namespace WeatherForecastAPI.Controllers
         {
             ICollection<FavoriteLocation>? userLocations = _userRepository.GetUserLocations(userId);
 
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
@@ -85,22 +91,26 @@ namespace WeatherForecastAPI.Controllers
             return Ok(userLocations);
         }
 
-
         [HttpDelete("{userId}/location")]
         [ProducesResponseType(200, Type = typeof(UserHasLocation))]
         public IActionResult DeleteFavoriteLocation(int userId, [FromQuery] string locationName)
         {
-            UserHasLocation? deletedLocation = _locationRepository.DeleteFavoriteLocation(userId, locationName);
+            UserHasLocation? deletedLocation = _locationRepository.DeleteFavoriteLocation(
+                userId,
+                locationName
+            );
 
-            if(deletedLocation is null) 
+            if (deletedLocation is null)
             {
                 return BadRequest(new { Message = "Location cannot be found" });
             }
 
-            return Ok(new 
-                { 
-                    Message = $"Location { deletedLocation.FavoriteLocation.Name } deleted for user { deletedLocation.UserId }" 
-                });
+            return Ok(
+                new
+                {
+                    Message = $"Location {deletedLocation.FavoriteLocation.Name} deleted for user {deletedLocation.UserId}"
+                }
+            );
         }
 
         [HttpDelete("{userId}")]
@@ -108,8 +118,8 @@ namespace WeatherForecastAPI.Controllers
         public IActionResult DeleteUser(int userId)
         {
             User? deletedUser = _userRepository.RemoveUser(userId);
-            
-            if(deletedUser is not null)
+
+            if (deletedUser is not null)
             {
                 return BadRequest(new { Message = "User Not Found" });
             }
