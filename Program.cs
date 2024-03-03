@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using WeatherForecastAPI.Data;
 using WeatherForecastAPI.Interfaces;
 using WeatherForecastAPI.Repository;
 using WeatherForecastAPI.Services;
+using WeatherForecastAPI.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,7 +36,7 @@ builder.Services.AddDbContext<ApplicationDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
-var domain = $"https://{builder.Configuration["Auth0:Domain"]}";
+string domain = $"https://{builder.Configuration["Auth0:Domain"]}";
 builder
     .Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -43,6 +45,12 @@ builder
         options.Audience = builder.Configuration["Auth0:Audience"];
     });
 
+builder.Services.AddAuthorization(options => 
+    {
+        options.AddPolicy("read:messages", policy => policy.Requirements.Add(new HasScopeRequirement("read:messages", domain)));
+    });
+
+builder.Services.AddSingleton<AuthorizationHandler<HasScopeRequirement>, HasScopeHandler>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
