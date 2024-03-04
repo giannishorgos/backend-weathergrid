@@ -24,9 +24,9 @@ namespace WeatherForecastAPI.Controllers
 
         [HttpPost(Name = "Add User")]
         [ProducesResponseType(200, Type = typeof(User))]
-        public IActionResult CreateUser([FromQuery] string Username)
+        public IActionResult CreateUser([FromBody] User newUser)
         {
-            var user = _userRepository.AddUser(Username);
+            var user = _userRepository.AddUser(newUser.Id, newUser.Username);
 
             if (!ModelState.IsValid)
             {
@@ -38,7 +38,7 @@ namespace WeatherForecastAPI.Controllers
 
         [HttpPost("{userId}/locations")]
         [ProducesResponseType(200, Type = typeof(void))]
-        public IActionResult CreateFavoriteLocation(int userId, [FromQuery] string locationName)
+        public IActionResult CreateFavoriteLocation(string userId, [FromQuery] string locationName)
         {
             UserHasLocation? userFavLocation = _locationRepository.AddFavoriteLocation(
                 userId,
@@ -64,11 +64,11 @@ namespace WeatherForecastAPI.Controllers
 
         [HttpGet("{userId}")]
         [ProducesResponseType(200, Type = typeof(User))]
-        public IActionResult GetUser(int id)
+        public IActionResult GetUser(string userId)
         {
-            User? user = _userRepository.GetUser(id);
+            User? user = _userRepository.GetUser(userId);
+            Console.WriteLine($"Model State, {ModelState}, user {user}");
 
-            Console.WriteLine($"Model State, {ModelState}");
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -79,7 +79,7 @@ namespace WeatherForecastAPI.Controllers
 
         [HttpGet("{userId}/locations")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<FavoriteLocation>))]
-        public IActionResult GetUserLocations(int userId)
+        public IActionResult GetUserLocations(string userId)
         {
             ICollection<FavoriteLocation>? userLocations = _userRepository.GetUserLocations(userId);
 
@@ -93,7 +93,7 @@ namespace WeatherForecastAPI.Controllers
 
         [HttpDelete("{userId}/location")]
         [ProducesResponseType(200, Type = typeof(UserHasLocation))]
-        public IActionResult DeleteFavoriteLocation(int userId, [FromQuery] string locationName)
+        public IActionResult DeleteFavoriteLocation(string userId, [FromQuery] string locationName)
         {
             UserHasLocation? deletedLocation = _locationRepository.DeleteFavoriteLocation(
                 userId,
@@ -115,7 +115,7 @@ namespace WeatherForecastAPI.Controllers
 
         [HttpDelete("{userId}")]
         [ProducesResponseType(200, Type = typeof(User))]
-        public IActionResult DeleteUser(int userId)
+        public IActionResult DeleteUser(string userId)
         {
             User? deletedUser = _userRepository.RemoveUser(userId);
 

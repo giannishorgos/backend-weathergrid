@@ -20,8 +20,9 @@ builder.Services.AddCors(options =>
         {
             policy
                 .WithOrigins("http://localhost:4200")
-                .WithMethods("GET")
-                .WithHeaders("Authorization");
+                .WithMethods("GET", "POST")
+                .AllowAnyHeader();
+                // .WithHeaders("Authorization");
         }
     );
 });

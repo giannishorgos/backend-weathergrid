@@ -17,7 +17,7 @@ namespace WeatherForecastAPI.Repository
             _userRepository = userRepository;
         }
 
-        public UserHasLocation? AddFavoriteLocation(int userId, string locationName)
+        public UserHasLocation? AddFavoriteLocation(string userId, string locationName)
         {
             locationName = locationName.ToLower();
 
@@ -44,7 +44,7 @@ namespace WeatherForecastAPI.Repository
             return userFavLocation;
         }
 
-        public UserHasLocation? DeleteFavoriteLocation(int userId, string locationName)
+        public UserHasLocation? DeleteFavoriteLocation(string userId, string locationName)
         {
             UserHasLocation? userFavLocation = _context
                 .UserHasLocations.Where(userLocation =>
