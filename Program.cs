@@ -18,7 +18,7 @@ builder.Services.AddCors(options =>
         name: FrontendOrigin,
         policy =>
         {
-            policy.WithOrigins("http://localhost:4200").WithMethods("GET");
+            policy.WithOrigins("http://localhost:4200").WithMethods("GET").WithHeaders("Authorization");
         }
     );
 });
