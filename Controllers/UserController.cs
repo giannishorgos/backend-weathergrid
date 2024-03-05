@@ -38,11 +38,11 @@ namespace WeatherForecastAPI.Controllers
 
         [HttpPost("{userId}/locations")]
         [ProducesResponseType(200, Type = typeof(void))]
-        public IActionResult CreateFavoriteLocation(string userId, [FromQuery] string locationName)
+        public IActionResult CreateFavoriteLocation(string userId, [FromBody] FavoriteLocation newLocation)
         {
             UserHasLocation? userFavLocation = _locationRepository.AddFavoriteLocation(
                 userId,
-                locationName
+                newLocation.Name
             );
 
             return Ok();
@@ -91,13 +91,13 @@ namespace WeatherForecastAPI.Controllers
             return Ok(userLocations);
         }
 
-        [HttpDelete("{userId}/location")]
+        [HttpDelete("{userId}/locations")]
         [ProducesResponseType(200, Type = typeof(UserHasLocation))]
-        public IActionResult DeleteFavoriteLocation(string userId, [FromQuery] string locationName)
+        public IActionResult DeleteFavoriteLocation(string userId, [FromBody] FavoriteLocation deleteLocation)
         {
             UserHasLocation? deletedLocation = _locationRepository.DeleteFavoriteLocation(
                 userId,
-                locationName
+                deleteLocation.Name
             );
 
             if (deletedLocation is null)
@@ -105,12 +105,7 @@ namespace WeatherForecastAPI.Controllers
                 return BadRequest(new { Message = "Location cannot be found" });
             }
 
-            return Ok(
-                new
-                {
-                    Message = $"Location {deletedLocation.FavoriteLocation.Name} deleted for user {deletedLocation.UserId}"
-                }
-            );
+            return Ok(deletedLocation);
         }
 
         [HttpDelete("{userId}")]

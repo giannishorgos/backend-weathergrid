@@ -3,10 +3,16 @@ using WeatherForecastAPI.Models;
 
 namespace WeatherForecastAPI.Repository
 {
+    /// <summary>
+    /// Repository for user data. Directly interacts with the database.
+    /// </summary>
     public class UserRepository
     {
         private ApplicationDBContext _context;
 
+        /// <summary>
+        /// Creates a new instance, injecting <see cref="ApplicationDBContext"/>.
+        /// </summary>
         public UserRepository(ApplicationDBContext context)
         {
             _context = context;
