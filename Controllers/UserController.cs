@@ -57,7 +57,10 @@ namespace WeatherForecastAPI.Controllers
         /// <returns>The newly added user's favorite location</returns>
         [HttpPost("{userId}/locations")]
         [ProducesResponseType(200, Type = typeof(UserHasLocation))]
-        public IActionResult CreateFavoriteLocation(string userId, [FromBody] FavoriteLocation newLocation)
+        public IActionResult CreateFavoriteLocation(
+            string userId,
+            [FromBody] FavoriteLocation newLocation
+        )
         {
             UserHasLocation? userFavLocation = _locationRepository.AddFavoriteLocation(
                 userId,
@@ -132,7 +135,10 @@ namespace WeatherForecastAPI.Controllers
         /// <returns>The deleted user's favorite location</returns>
         [HttpDelete("{userId}/locations")]
         [ProducesResponseType(200, Type = typeof(UserHasLocation))]
-        public IActionResult DeleteFavoriteLocation(string userId, [FromBody] FavoriteLocation deleteLocation)
+        public IActionResult DeleteFavoriteLocation(
+            string userId,
+            [FromBody] FavoriteLocation deleteLocation
+        )
         {
             UserHasLocation? deletedLocation = _locationRepository.DeleteFavoriteLocation(
                 userId,
