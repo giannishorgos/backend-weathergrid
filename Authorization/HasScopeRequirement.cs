@@ -2,6 +2,9 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace WeatherForecastAPI.Authorization
 {
+    /// <summary>
+    /// Requirement for the HasScopeHandler.
+    /// </summary>
     public class HasScopeRequirement : IAuthorizationRequirement
     {
         public string Issuer { get; }

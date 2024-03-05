@@ -2,8 +2,17 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace WeatherForecastAPI.Authorization
 {
+    /// <summary>
+    /// Handler for the HasScopeRequirement.
+    /// </summary>
     public class HasScopeHandler : AuthorizationHandler<HasScopeRequirement>
     {
+        /// <summary>
+        /// Checks if the user has the required scope.
+        /// </summary>
+        /// <param name="context">The authorization context.</param>
+        /// <param name="requirement">The requirement to check for.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
         protected override Task HandleRequirementAsync(
             AuthorizationHandlerContext context,
             HasScopeRequirement requirement

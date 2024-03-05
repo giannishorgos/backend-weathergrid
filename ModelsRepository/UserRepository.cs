@@ -18,11 +18,20 @@ namespace WeatherForecastAPI.Repository
             _context = context;
         }
 
+        /// <summary>
+        /// Gets all users in the database.
+        /// </summary>
+        /// <returns>ICollection containing users</returns>
         public ICollection<User> GetUsers()
         {
             return _context.User.OrderBy(u => u.Id).ToList();
         }
 
+        /// <summary>
+        /// Gets a user by their ID.
+        /// </summary>
+        /// <param name="userId">The user's ID</param>
+        /// <returns>The user with the given ID, or null if not found</returns>
         public User? GetUser(string userId)
         {
             Console.WriteLine(userId);
@@ -31,14 +40,25 @@ namespace WeatherForecastAPI.Repository
             return user;
         }
 
-        public ICollection<FavoriteLocation> GetUserLocations(string id)
+        /// <summary>
+        /// Gets all favorite locations for a user.
+        /// </summary>
+        /// <param name="userId">The user's ID</param>
+        /// <returns>ICollection containing favorite locations</returns>
+        public ICollection<FavoriteLocation> GetUserLocations(string userId)
         {
             return _context
-                .UserHasLocations.Where(u => u.UserId == id)
+                .UserHasLocations.Where(u => u.UserId == userId)
                 .Select(u => u.FavoriteLocation)
                 .ToList();
         }
 
+        /// <summary>
+        /// Adds a user to the database.
+        /// </summary>
+        /// <param name="userId">The user's ID</param>
+        /// <param name="username">The user's username</param>
+        /// <returns>The user that was added</returns>
         public User AddUser(string userId, string username)
         {
             User user = new User { Id = userId, Username = username };
@@ -48,9 +68,14 @@ namespace WeatherForecastAPI.Repository
             return user;
         }
 
-        public User? RemoveUser(string id)
+        /// <summary>
+        /// Removes a user from the database.
+        /// </summary>
+        /// <param name="userId">The user's ID</param>
+        /// <returns>The user that was removed, or null if not found</returns>
+        public User? RemoveUser(string userId)
         {
-            User? user = _context.User.Find(id);
+            User? user = _context.User.Find(userId);
 
             if (user is not null)
             {

@@ -1,5 +1,8 @@
 namespace WeatherForecastAPI.Models
 {
+    /// <summary>
+    /// Represents a user's favorite location.
+    /// </summary>
     public class UserHasLocation
     {
         public string UserId { get; set; } = string.Empty;

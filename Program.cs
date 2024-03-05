@@ -19,24 +19,28 @@ builder.Services.AddCors(options =>
         policy =>
         {
             policy.WithOrigins("http://localhost:4200").WithMethods("GET", "POST", "DELETE").AllowAnyHeader();
-            // .WithHeaders("Authorization");
         }
     );
 });
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Configuration.AddEnvironmentVariables();
+
+/// Dependency Injection
 builder.Services.AddScoped<IHttp, HttpService>();
 builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<FavoriteLocationRepository>();
 builder.Services.AddControllers();
 
+/// Database
 builder.Services.AddDbContext<ApplicationDBContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
+// Auth0
 string domain = $"https://{builder.Configuration["Auth0:Domain"]}";
 builder
     .Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
