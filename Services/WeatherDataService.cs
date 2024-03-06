@@ -12,13 +12,16 @@ namespace WeatherForecastAPI.Services
     public class WeatherDataService 
     {
         private readonly HttpClient _client;
-        private readonly IConfiguration _configuration;
         private string? _URL = string.Empty;
+        private ILogger _logger;
 
         /// <summary>
-        /// Creates a new instance, setting up <see cref="HttpClient"/>.
+        /// Creates a new instance, injecting <see cref="IConfiguration"/> and <see cref="ILogger"/>.
         /// </summary>
-        public WeatherDataService(IConfiguration configuration)
+        /// <param name="configuration">The configuration instance used for retrieving configuration data.</param>
+        /// <param name="logger">The logger instance used for logging.</param>
+        public WeatherDataService(IConfiguration configuration, 
+            ILogger<WeatherDataService> logger)
         {
             HttpClientHandler handler = new HttpClientHandler
             {
@@ -27,19 +30,17 @@ namespace WeatherForecastAPI.Services
 
             _client = new HttpClient();
 
-            _configuration = configuration;
-            Console.WriteLine("Re bro kala den to pairnei?", configuration["WeatherAPIURL"]);
-            _URL = _configuration["WeatherAPIURL"];
+            _logger = logger;
+            _URL = configuration["WeatherAPIURL"];
 
         }
 
         /// <summary>
-        /// Makes a GET request to the given URL and returns the response as a string.
-        /// <exception cref="HttpRequestException">Thrown when the HTTP request fails.</exception>
+        /// Retrieves weather data according to <see cref="QueryParameters"/>.
         /// </summary>
-        /// <param name="url">The URL to make the request to.</param>
-        /// <returns>Returns the response as a string.</returns>
-        public async Task<WeatherData?> getWeatherDataString(QueryParameters queryParameters)
+        /// <param name="queryParameters">Options that defines the response.</param>
+        /// <returns>Returns a <see cref="WeatherData"/> instance representing the weather data or null.</returns>
+        public async Task<WeatherData?> getWeatherData(QueryParameters queryParameters)
         {
             if (_URL is null)
             {
@@ -48,7 +49,6 @@ namespace WeatherForecastAPI.Services
             string uri =
                 $"{_URL}q={queryParameters.City}&days={queryParameters.Days}&aqi={queryParameters.Aqi}";
 
-            Console.WriteLine("uri\n", uri);
             try
             {
                 HttpResponseMessage response = await _client.GetAsync(uri);
@@ -59,7 +59,8 @@ namespace WeatherForecastAPI.Services
             }
             catch (HttpRequestException e)
             {
-                throw;
+                _logger.LogError(e, "Failed to retrieve weather data.");
+                return null;
             }
         }
     }

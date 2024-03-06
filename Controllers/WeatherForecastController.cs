@@ -12,20 +12,16 @@ namespace WeatherForecastAPI.Controllers
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
-        private readonly ILogger<WeatherForecastController> _logger;
         private readonly WeatherDataService _weatherService;
 
         /// <summary>
-        /// Creates a new instance, injecting <see cref="ILogger"/> and <see cref="WeatherDataService"/>.
+        /// Creates a new instance, injecting <see cref="WeatherDataService"/>.
         /// </summary>
-        /// <param name="logger">The logger instance used for logging.</param>
         /// <param name="weatherService">The HTTP service instance used for making HTTP requests.</param>
         public WeatherForecastController(
-            ILogger<WeatherForecastController> logger,
             WeatherDataService weatherService
         )
         {
-            _logger = logger;
             _weatherService = weatherService;
         }
 
@@ -38,22 +34,14 @@ namespace WeatherForecastAPI.Controllers
         [HttpGet(Name = "GetWeatherForecast")]
         public async Task<IActionResult> Get([FromQuery] QueryParameters queryParameters)
         {
-            try
+            WeatherData? weatherData = await _weatherService.getWeatherData(queryParameters);
+            if (weatherData != null)
             {
-                WeatherData? weatherData = await _weatherService.getWeatherDataString(queryParameters);
-                if (weatherData != null)
-                {
-                    return Ok(weatherData);
-                }
-                else
-                {
-                    return BadRequest("Failed to deserialize Json");
-                }
+                return Ok(weatherData);
             }
-            catch (HttpRequestException e)
+            else
             {
-                _logger.LogError($"Http Error: {e}");
-                return BadRequest("No data for these parameters");
+                return BadRequest("Failed to retrieve weather data.");
             }
         }
     }
