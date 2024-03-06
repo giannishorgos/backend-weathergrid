@@ -28,7 +28,7 @@ namespace WeatherForecastAPI.Services
             _client = new HttpClient();
 
             _configuration = configuration;
-            Console.WriteLine("Re bro kala den to pairnei?", _configuration.ToString());
+            Console.WriteLine("Re bro kala den to pairnei?", configuration["WeatherAPIURL"]);
             _URL = _configuration["WeatherAPIURL"];
 
         }
