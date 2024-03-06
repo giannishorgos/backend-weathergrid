@@ -5,7 +5,7 @@ namespace WeatherForecastAPI.Models
     /// <summary>
     /// Model for query parameters.
     /// </summary>
-    public class QueryParametersModel
+    public class QueryParameters
     {
         private string _aqi = "no";
 

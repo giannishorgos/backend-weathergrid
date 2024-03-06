@@ -13,40 +13,34 @@ namespace WeatherForecastAPI.Controllers
     public class WeatherForecastController : ControllerBase
     {
         private readonly ILogger<WeatherForecastController> _logger;
-        private readonly HttpService _httpService;
-
-        private const string _URL =
-            "http://api.weatherapi.com/v1/forecast.json?key=5f7701a58bf44f1a8d9195220240401&alerts=nobbj&";
+        private readonly WeatherDataService _weatherService;
 
         /// <summary>
-        /// Creates a new instance, injecting <see cref="ILogger"/> and <see cref="HttpService"/>.
+        /// Creates a new instance, injecting <see cref="ILogger"/> and <see cref="WeatherDataService"/>.
         /// </summary>
         /// <param name="logger">The logger instance used for logging.</param>
-        /// <param name="httpService">The HTTP service instance used for making HTTP requests.</param>
+        /// <param name="weatherService">The HTTP service instance used for making HTTP requests.</param>
         public WeatherForecastController(
             ILogger<WeatherForecastController> logger,
-            HttpService httpService
+            WeatherDataService weatherService
         )
         {
             _logger = logger;
-            _httpService = httpService;
+            _weatherService = weatherService;
         }
 
         /// <summary>
-        /// Serves weather data according to <see cref="QueryParametersModel"/>.
+        /// Serves weather data according to <see cref="QueryParameters"/>.
         /// <exception cref="HttpRequestException">Thrown when the HTTP request fails.</exception>
         /// </summary>
         /// <param name="queryParameters">Options that defines the response.</param>
         /// <returns>Returns an <see cref="IActionResult"/> representing the HTTP response.</returns>
         [HttpGet(Name = "GetWeatherForecast")]
-        public async Task<IActionResult> Get([FromQuery] QueryParametersModel queryParameters)
+        public async Task<IActionResult> Get([FromQuery] QueryParameters queryParameters)
         {
-            string uri =
-                $"{_URL}q={queryParameters.City}&days={queryParameters.Days}&aqi={queryParameters.Aqi}";
             try
             {
-                string response = await _httpService.getResponseString(uri);
-                WeatherData? weatherData = JsonConvert.DeserializeObject<WeatherData>(response);
+                WeatherData? weatherData = await _weatherService.getWeatherDataString(queryParameters);
                 if (weatherData != null)
                 {
                     return Ok(weatherData);

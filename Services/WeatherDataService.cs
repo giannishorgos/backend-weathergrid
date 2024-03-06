@@ -39,7 +39,7 @@ namespace WeatherForecastAPI.Services
         /// </summary>
         /// <param name="url">The URL to make the request to.</param>
         /// <returns>Returns the response as a string.</returns>
-        public async Task<WeatherData?> getWeatherDataString(QueryParameters queryParameters)
+        public async Task<WeatherData?> getWeatherDataString(QueryParametersModel queryParameters)
         {
             string uri =
                 $"{_URL}q={queryParameters.City}&days={queryParameters.Days}&aqi={queryParameters.Aqi}";

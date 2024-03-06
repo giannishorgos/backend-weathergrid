@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using WeatherForecastAPI.Authorization;
 using WeatherForecastAPI.Data;
-using WeatherForecastAPI.Interfaces;
 using WeatherForecastAPI.Repository;
 using WeatherForecastAPI.Services;
+using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,10 +32,14 @@ builder.Services.AddSwaggerGen();
 builder.Configuration.AddEnvironmentVariables();
 
 /// Dependency Injection
-builder.Services.AddScoped<IHttp, HttpService>();
+builder.Services.AddScoped<WeatherDataService>();
 builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<FavoriteLocationRepository>();
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddNewtonsoftJson(options =>
+    {
+        options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+    });
 
 /// Database
 builder.Services.AddDbContext<ApplicationDBContext>(options =>
