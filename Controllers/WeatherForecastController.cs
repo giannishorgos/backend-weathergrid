@@ -18,9 +18,7 @@ namespace WeatherForecastAPI.Controllers
         /// Creates a new instance, injecting <see cref="WeatherDataService"/>.
         /// </summary>
         /// <param name="weatherService">The HTTP service instance used for making HTTP requests.</param>
-        public WeatherForecastController(
-            WeatherDataService weatherService
-        )
+        public WeatherForecastController(WeatherDataService weatherService)
         {
             _weatherService = weatherService;
         }

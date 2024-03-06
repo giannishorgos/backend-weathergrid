@@ -1,15 +1,15 @@
 using System.Net;
+using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using WeatherForecastAPI.Interfaces;
 using WeatherForecastAPI.Models;
-using Newtonsoft.Json;
-using Microsoft.Extensions.Configuration;
 
 namespace WeatherForecastAPI.Services
 {
     /// <summary>
     /// Service for making HTTP requests.
     /// </summary>
-    public class WeatherDataService 
+    public class WeatherDataService
     {
         private readonly HttpClient _client;
         private string? _URL = string.Empty;
@@ -20,8 +20,7 @@ namespace WeatherForecastAPI.Services
         /// </summary>
         /// <param name="configuration">The configuration instance used for retrieving configuration data.</param>
         /// <param name="logger">The logger instance used for logging.</param>
-        public WeatherDataService(IConfiguration configuration, 
-            ILogger<WeatherDataService> logger)
+        public WeatherDataService(IConfiguration configuration, ILogger<WeatherDataService> logger)
         {
             HttpClientHandler handler = new HttpClientHandler
             {
@@ -32,7 +31,6 @@ namespace WeatherForecastAPI.Services
 
             _logger = logger;
             _URL = configuration["WeatherAPIURL"];
-
         }
 
         /// <summary>
@@ -44,7 +42,8 @@ namespace WeatherForecastAPI.Services
         {
             if (_URL is null)
             {
-                _URL = "http://api.weatherapi.com/v1/forecast.json?key=5f7701a58bf44f1a8d9195220240401&alerts=nobbj&";
+                _URL =
+                    "http://api.weatherapi.com/v1/forecast.json?key=5f7701a58bf44f1a8d9195220240401&alerts=nobbj&";
             }
             string uri =
                 $"{_URL}q={queryParameters.City}&days={queryParameters.Days}&aqi={queryParameters.Aqi}";
@@ -54,7 +53,7 @@ namespace WeatherForecastAPI.Services
                 HttpResponseMessage response = await _client.GetAsync(uri);
                 response.EnsureSuccessStatusCode();
 
-                string data =  await response.Content.ReadAsStringAsync();
+                string data = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<WeatherData>(data);
             }
             catch (HttpRequestException e)
