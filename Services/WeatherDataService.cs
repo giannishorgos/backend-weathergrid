@@ -13,7 +13,7 @@ namespace WeatherForecastAPI.Services
     {
         private readonly HttpClient _client;
         private readonly IConfiguration _configuration;
-        private readonly string? _URL = string.Empty;
+        private string? _URL = string.Empty;
 
         /// <summary>
         /// Creates a new instance, setting up <see cref="HttpClient"/>.
@@ -39,8 +39,12 @@ namespace WeatherForecastAPI.Services
         /// </summary>
         /// <param name="url">The URL to make the request to.</param>
         /// <returns>Returns the response as a string.</returns>
-        public async Task<WeatherData?> getWeatherDataString(QueryParametersModel queryParameters)
+        public async Task<WeatherData?> getWeatherDataString(QueryParameters queryParameters)
         {
+            if (_URL is null)
+            {
+                _URL = "http://api.weatherapi.com/v1/forecast.json?key=5f7701a58bf44f1a8d9195220240401&alerts=nobbj&";
+            }
             string uri =
                 $"{_URL}q={queryParameters.City}&days={queryParameters.Days}&aqi={queryParameters.Aqi}";
 
